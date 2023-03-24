@@ -2,13 +2,13 @@
 
 This benchmark shows the performance of the PHP dependency injection containers.
 
-- [Symfony Dependency Injection Container](https://symfony.com/doc/current/components/dependency_injection.html)
-- [PHP-DI](http://php-di.org/)
-- Laravel Container
-- Spiral Container
-- Yii3 Container
-- League Container
-- Laminas Container
+- [Symfony Dependency Injection Container](https://packagist.org/packages/symfony/dependency-injection)
+- [PHP-DI](https://packagist.org/packages/php-di/php-di)
+- [Laravel Container](https://packagist.org/packages/illuminate/container)
+- [Spiral Container](https://packagist.org/packages/spiral/core)
+- [Yii3 Container](https://packagist.org/packages/yiisoft/di)
+- [League Container](https://packagist.org/packages/league/container)
+- [Laminas Container](https://packagist.org/packages/laminas/laminas-di)
 
 ```bash
 php app.php bench:containers --iterations=10000
