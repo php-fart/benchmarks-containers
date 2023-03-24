@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Endpoint\Console;
 
 use App\Containers\CompositeContainer;
+use App\Containers\Laminas;
 use App\Containers\Laravel;
 use App\Containers\League;
 use App\Containers\PhpDi;
@@ -41,6 +42,7 @@ final class ContainerBenchCommand extends Command
         $this->cc->addContainer(new League());
         $this->cc->addContainer(new Symfony());
         $this->cc->addContainer(new PhpDi());
+        $this->cc->addContainer(new Laminas());
     }
 
     public function __invoke()
@@ -62,6 +64,7 @@ final class ContainerBenchCommand extends Command
                 'League' => fn () => $this->cc->get(League::class, 'foo'),
                 'Symfony' => fn () => $this->cc->get(Symfony::class, 'foo'),
                 'PHP DI' => fn () => $this->cc->get(PhpDi::class, 'foo'),
+                'Laminas' => fn () => $this->cc->get(Laminas::class, 'foo'),
             ]);
 
         $this->info('Benching container performance with autowiring.');
@@ -74,6 +77,7 @@ final class ContainerBenchCommand extends Command
                 'Laravel' => fn () => $this->cc->make(Laravel::class, TestClass::class),
                 'League' => fn () => $this->cc->make(League::class, TestClass::class),
                 'PHP DI' => fn () => $this->cc->make(PhpDi::class, TestClass::class),
+                'Laminas' => fn () => $this->cc->make(Laminas::class, TestClass::class),
                 // 'Symfony' => fn () => $this->cc->make(Symfony::class, TestClass::class),
             ]);
     }
