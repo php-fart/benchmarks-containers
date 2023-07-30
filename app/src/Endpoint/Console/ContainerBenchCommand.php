@@ -21,7 +21,7 @@ use Spiral\Console\Attribute\Option;
 use Spiral\Console\Command;
 
 #[AsCommand(
-    name: 'bench:containers',
+    name: 'containers:bench',
     description: 'Bench containers performance',
 )]
 final class ContainerBenchCommand extends Command
@@ -58,13 +58,13 @@ final class ContainerBenchCommand extends Command
             ->iterations($this->iterations)
             ->withoutData()
             ->compare([
-                'Spiral' => fn () => $this->cc->get(Spiral::class, 'foo'),
+                'PHP DI' => fn () => $this->cc->get(PhpDi::class, 'foo'),
                 'Yii' => fn () => $this->cc->get(Yii::class, 'foo'),
+                'Spiral' => fn () => $this->cc->get(Spiral::class, 'foo'),
                 'Laravel' => fn () => $this->cc->get(Laravel::class, 'foo'),
                 'League' => fn () => $this->cc->get(League::class, 'foo'),
-                'Symfony' => fn () => $this->cc->get(Symfony::class, 'foo'),
-                'PHP DI' => fn () => $this->cc->get(PhpDi::class, 'foo'),
                 'Laminas' => fn () => $this->cc->get(Laminas::class, 'foo'),
+                'Symfony' => fn () => $this->cc->get(Symfony::class, 'foo'),
             ]);
 
         $this->info('Benching container performance with autowiring.');
@@ -72,11 +72,11 @@ final class ContainerBenchCommand extends Command
             ->iterations($this->iterations)
             ->withoutData()
             ->compare([
-                'Spiral' => fn () => $this->cc->make(Spiral::class, TestClass::class),
+                'PHP DI' => fn () => $this->cc->make(PhpDi::class, TestClass::class),
                 'Yii' => fn () => $this->cc->make(Yii::class, TestClass::class),
+                'Spiral' => fn () => $this->cc->make(Spiral::class, TestClass::class),
                 'Laravel' => fn () => $this->cc->make(Laravel::class, TestClass::class),
                 'League' => fn () => $this->cc->make(League::class, TestClass::class),
-                'PHP DI' => fn () => $this->cc->make(PhpDi::class, TestClass::class),
                 'Laminas' => fn () => $this->cc->make(Laminas::class, TestClass::class),
                 // 'Symfony' => fn () => $this->cc->make(Symfony::class, TestClass::class),
             ]);

@@ -35,7 +35,7 @@
         "spiral-packages/yii-error-handler-bridge": "^1.0",
         "spiral/testing": "^2.2",
         "symfony/var-dumper": "^6.1",
-        "vimeo/psalm": "dev-master"
+        "vimeo/psalm": "^5"
     },
     "autoload": {
         "psr-4": {

@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Containers;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ServiceConfigurator;
 
 final class Symfony implements ContainerInterface
 {
