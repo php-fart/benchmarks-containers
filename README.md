@@ -2,41 +2,118 @@
 
 This benchmark shows the performance of the PHP dependency injection containers.
 
-- [Symfony Dependency Injection Container](https://packagist.org/packages/symfony/dependency-injection)
-- [PHP-DI](https://packagist.org/packages/php-di/php-di)
-- [Laravel Container](https://packagist.org/packages/illuminate/container)
-- [Spiral Container](https://packagist.org/packages/spiral/core)
-- [Yii3 Container](https://packagist.org/packages/yiisoft/di)
-- [League Container](https://packagist.org/packages/league/container)
-- [Laminas Container](https://packagist.org/packages/laminas/laminas-di)
-
 ```bash
-php app.php containers:bench --iterations=10000
+composer bench
 ```
 
 ## Results
-```bash
-Benching container performance with getting by name.
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  #       PHP DI                   Yii                      Spiral                   Laravel                  League                   Laminas                  Symfony
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  min     0.006 ms - 0 bytes       0.0063 ms - 0 bytes      0.0085 ms - 0 bytes      0.0162 ms - 0 bytes      0.0226 ms - 0 bytes      0.0062 ms - 0 bytes      0.0111 ms - 0 bytes
-  max     3.9425 ms - 0 bytes      1.4256 ms - 0 bytes      0.1591 ms - 0 bytes      0.1421 ms - 0 bytes      1.6615 ms - 2.00 MB      0.2457 ms - 0 bytes      0.2025 ms - 0 bytes
-  avg     0.0077234 ms - 0 bytes   0.0076936 ms - 0 bytes   0.0122158 ms - 0 bytes   0.0203376 ms - 0 bytes   0.0303355 ms - 0 bytes   0.0100444 ms - 0 bytes   0.0145603 ms - 0 bytes
-  total   988.3077 ms              960.6244 ms              1052.6636 ms             1121.8188 ms             1230.8812 ms             1063.3366 ms             1116.9395 ms
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  Order   - 2 -                    - 1 -                    - 4 -                    - 6 -                    - 7 -                    - 3 -                    - 5 -
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
 
-Benching container performance with autowiring.
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  #       PHP DI                   Yii                      Spiral                   Laravel                  League                   Laminas
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  min     0.0487 ms - 0 bytes      0.0706 ms - 0 bytes      0.3245 ms - 0 bytes      0.1753 ms - 0 bytes      0.1964 ms - 0 bytes      0.0771 ms - 0 bytes
-  max     3.1853 ms - 0 bytes      2.6646 ms - 0 bytes      1.1043 ms - 0 bytes      0.7654 ms - 0 bytes      1.8375 ms - 0 bytes      3.0486 ms - 0 bytes
-  avg     0.0605565 ms - 0 bytes   0.0856609 ms - 0 bytes   0.3797469 ms - 0 bytes   0.2017357 ms - 0 bytes   0.2228839 ms - 0 bytes   0.0928257 ms - 0 bytes
-  total   1610.3265 ms             1879.6877 ms             4797.3544 ms             3112.3417 ms             3312.7847 ms             1992.7877 ms
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
-  Order   - 1 -                    - 2 -                    - 6 -                    - 4 -                    - 5 -                    - 3 -
- ------- ------------------------ ------------------------ ------------------------ ------------------------ ------------------------ ------------------------
+
+### NonSharedServiceCreationByNameBench
+
+Create service on every call.
+
+```php
+$app->get(Service::class); // Service#1
+$app->get(Service::class); // Service#2
 ```
+
+```bash
+NonSharedServiceCreationByNameBench
++----------------------+------+-----+----------+---------+---------+
+| subject              | revs | its | mem_peak | mode    | rstdev  |
++----------------------+------+-----+----------+---------+---------+
+| benchSymfonyRuntime  | 1000 | 20  | 2.331mb  | 1.401μs | ±21.02% |
+| benchSymfonyCompiled | 1000 | 20  | 2.331mb  | 0.121μs | ±15.62% |
+| benchYii             | 1000 | 20  | 2.330mb  | 0.652μs | ±14.86% |
+| benchLaravel         | 1000 | 20  | 2.330mb  | 0.897μs | ±14.04% |
+| benchSpiral          | 1000 | 20  | 2.330mb  | 2.216μs | ±6.21%  |
+| benchPhpDi           | 1000 | 20  | 2.330mb  | 0.714μs | ±15.66% |
+| benchLaminas         | 1000 | 20  | 2.330mb  | 0.424μs | ±26.24% |
++----------------------+------+-----+----------+---------+---------+
+```
+
+- Best: **Symfony** (0.121μs)
+- Worst: **Spiral** (2.216μs)
+
+### SharedServiceCreationByNameBench
+
+Simple singleton service creation.
+
+```php
+$app->get(Service::class); // Service#1
+$app->get(Service::class); // Service#1
+```
+
+```bash
+SharedServiceCreationByNameBench
++----------------------+------+-----+----------+---------+---------+
+| subject              | revs | its | mem_peak | mode    | rstdev  |
++----------------------+------+-----+----------+---------+---------+
+| benchSymfonyRuntime  | 1000 | 20  | 2.330mb  | 0.138μs | ±26.40% |
+| benchSymfonyCompiled | 1000 | 20  | 2.330mb  | 0.041μs | ±16.09% |
+| benchYii             | 1000 | 20  | 2.330mb  | 0.048μs | ±11.47% |
+| benchLaravel         | 1000 | 20  | 2.330mb  | 0.206μs | ±14.76% |
+| benchSpiral          | 1000 | 20  | 2.330mb  | 0.774μs | ±25.12% |
+| benchPhpDi           | 1000 | 20  | 2.330mb  | 0.046μs | ±24.64% |
+| benchLaminas         | 1000 | 20  | 2.330mb  | 0.042μs | ±21.90% |
++----------------------+------+-----+----------+---------+---------+
+```
+
+- Best: **Symfony** (0.041μs)
+- Worst: **Spiral** (0.774μs)
+
+### ServiceWithAutowireBench
+
+Service singleton creation with autowiring.
+
+```php
+$app->get(Service::class); // Service#1 { dependency: InnerService }
+$app->get(Service::class); // Service#1 { dependency: InnerService }
+```
+
+```bash
+ServiceWithAutowireBench
++----------------------+------+-----+----------+---------+---------+
+| subject              | revs | its | mem_peak | mode    | rstdev  |
++----------------------+------+-----+----------+---------+---------+
+| benchSymfonyRuntime  | 1000 | 20  | 2.336mb  | 0.134μs | ±7.46%  |
+| benchSymfonyCompiled | 1000 | 20  | 2.336mb  | 0.041μs | ±8.78%  |
+| benchYii             | 1000 | 20  | 2.336mb  | 0.048μs | ±22.22% |
+| benchLaravel         | 1000 | 20  | 2.336mb  | 0.202μs | ±5.34%  |
+| benchSpiral          | 1000 | 20  | 2.336mb  | 0.464μs | ±24.02% |
+| benchPhpDi           | 1000 | 20  | 2.336mb  | 0.045μs | ±16.34% |
+| benchLaminas         | 1000 | 20  | 2.336mb  | 0.042μs | ±2.49%  |
++----------------------+------+-----+----------+---------+---------+
+```
+
+- Best: **Symfony** (0.041μs)
+- Worst: **Spiral** (0.464μs)
+
+### ServiceCreationFromFactoryBench
+
+Create service on every call from singleton factory service.
+
+```php
+$app->get(Service::class); // Service#1 (from Factory#1->create())
+$app->get(Service::class); // Service#2 (from Factory#1->create())
+```
+
+```bash
+ServiceCreationFromFactoryBench
++----------------------+------+-----+----------+----------+---------+
+| subject              | revs | its | mem_peak | mode     | rstdev  |
++----------------------+------+-----+----------+----------+---------+
+| benchSymfonyRuntime  | 1000 | 20  | 2.338mb  | 1.605μs  | ±12.40% |
+| benchSymfonyCompiled | 1000 | 20  | 2.338mb  | 0.146μs  | ±24.72% |
+| benchYii             | 1000 | 20  | 2.338mb  | 0.048μs  | ±36.87% |
+| benchLaravel         | 1000 | 20  | 2.338mb  | 0.968μs  | ±21.22% |
+| benchSpiral          | 1000 | 20  | 2.338mb  | 3.865μs  | ±3.77%  |
+| benchPhpDi           | 1000 | 20  | 2.338mb  | 0.044μs  | ±16.73% |
+| benchLaminas         | 1000 | 20  | -------  | -------- | ------  |
++----------------------+------+-----+----------+----------+---------+
+```
+
+- Best: **PHP-DI** (0.044μs)
+- Worst: **Spiral** (3.865μs)
+- Note: **Laminas** does not support this functionality (or no?)
