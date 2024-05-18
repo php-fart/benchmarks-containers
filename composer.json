@@ -1,4 +1,7 @@
 {
+    "name": "local/container-bench",
+    "description": "PHP Dependency Injection container benchmarks",
+    "license": "MIT",
     "require": {
         "php": "^8.3",
         "illuminate/container": "^11.7",
